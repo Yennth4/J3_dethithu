@@ -16,8 +16,16 @@ public class NhanVienService {
         return repository.getAll();
     }
 
+    public List<NhanVien> search(NhanVien nhanVien) {
+        return repository.search(nhanVien);
+    }
+
     public void add(NhanVien nhanVien) {
         repository.add(nhanVien);
+    }
+
+    public void update(NhanVien nhanVien) {
+        repository.update(nhanVien);
     }
 
     public void remove(int index) {
@@ -26,5 +34,9 @@ public class NhanVienService {
 
     public boolean isMaNVExists(int maNV) {
         return repository.isMaNVExists(maNV);
+    }
+
+    public List<NhanVien> sort() {
+        return repository.sort();
     }
 }
