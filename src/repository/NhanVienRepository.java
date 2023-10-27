@@ -55,6 +55,21 @@ public class NhanVienRepository implements NhanVienInterface<NhanVien> {
     }
 
     @Override
+    public void update(NhanVien nhanVien) {
+        try {
+            String query = "UPDATE NhanVien SET MatKhau = ? ,HoTen = ? ,VaiTro = ? WHERE MaNV = ?"; 
+            PreparedStatement ps = conn.prepareStatement(query);
+            ps.setObject(1, nhanVien.getMatKhau());
+            ps.setObject(2, nhanVien.getHoTen());
+            ps.setObject(3, nhanVien.getVaiTro());
+            ps.setObject(4, nhanVien.getMa());
+            ps.execute();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
     public void remove(int index) {
         try {
             String query = "DELETE FROM KhoaHoc WHERE MaNV = ? ;" + "DELETE FROM NguoiHoc WHERE MaNV = ? ;" + "DELETE FROM NhanVien WHERE  MaNV = ? ;";
@@ -85,5 +100,41 @@ public class NhanVienRepository implements NhanVienInterface<NhanVien> {
         }
         return false; // Trả về false nếu có lỗi xảy ra hoặc mã không tồn tại.
     }
-}
 
+    @Override
+    public List<NhanVien> search(NhanVien nhanVien) {
+        List<NhanVien> list = new ArrayList<>();
+        try {
+            String query = "SELECT * FROM NhanVien WHERE HoTen like ? or HoTen like ? or HoTen like ?";
+            PreparedStatement ps = conn.prepareStatement(query);
+            ps.setObject(1, nhanVien.getHoTen() + "%");
+            ps.setObject(2, "%" + nhanVien.getHoTen() + "%");
+            ps.setObject(3, "%" + nhanVien.getHoTen());
+            ps.execute();
+            ResultSet rs = ps.getResultSet();
+            while (rs.next()) {
+                list.add(new NhanVien(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4)));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+    
+    @Override
+    public List<NhanVien> sort() {
+        List<NhanVien> list = new ArrayList<>();
+        try {
+            String query = "SELECT * FROM NhanVien ORDER BY MaNV DESC";
+            PreparedStatement ps = conn.prepareStatement(query);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                list.add(new NhanVien(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4)));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+    
+}
